@@ -72,7 +72,7 @@
 ### Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/project.git
+git clone https://github.com/vanshikavbhatia/upi-fraud-sentinel.git
 
 # Navigate to project directory
 cd upi-fraud-sentinel
@@ -96,17 +96,12 @@ npm run preview
 
 1. Push your repository to GitHub:
    ```bash
-   git init
-   git add .
-   git commit -m "feat: AegisUPI Sentinel AI initial release"
-   git branch -M main
-   git remote add origin https://github.com/your-username/project.git
    git push -u origin main
    ```
 2. Log into [Vercel](https://vercel.com/) and click **"Add New Project"**.
-3. Import your GitHub repository.
+3. Import your GitHub repository (`vanshikavbhatia/upi-fraud-sentinel`).
 4. Framework Preset: **Vite**.
-5. Click **Deploy**. (Your live URL will be ready: `https://your-project.vercel.app`).
+5. Click **Deploy** (Your live URL will be ready: `https://upi-fraud-sentinel.vercel.app`).
 6. *(Optional)* Add `VITE_GEMINI_API_KEY` in Vercel Environment Variables.
 
 ---

@@ -1,76 +1,117 @@
-export type EthnicCategory = 'Sarees' | 'Kurtas' | 'Lehengas' | 'Dupattas' | 'Anarkalis';
+export type RiskSeverity = 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
-export type FabricType =
-  | 'Banarasi Silk'
-  | 'Kanjeevaram Silk'
-  | 'Chanderi Silk'
-  | 'Pure Georgette'
-  | 'Organza'
-  | 'Velvet'
-  | 'Mulmul Cotton'
-  | 'Tussar Silk';
+export type AlertStatus = 'OPEN' | 'INVESTIGATING' | 'FROZEN' | 'CLEARED' | 'ESCALATED';
 
-export type CraftWork =
-  | 'Zari Weave'
-  | 'Chikankari'
-  | 'Bandhani'
-  | 'Gota Patti'
-  | 'Mirror Work'
-  | 'Aari Embroidery';
+export type FraudCategory =
+  | 'MULE_SYNDICATE'
+  | 'VELOCITY_ABUSE'
+  | 'PHISHING_QR_SPOOF'
+  | 'STRUCTURAL_SPLIT'
+  | 'SIM_SWAP_DEVICE_ANOMALY'
+  | 'GEO_TELEPORTATION'
+  | 'SOCIAL_ENGINEERING_REVERSE'
+  | 'REPEATED_COLLECT_SPAM';
 
-export type OccasionType = 'Bridal' | 'Festive' | 'Wedding Guest' | 'Casual Elegance' | 'Sangeet & Mehendi';
+export type PSPProvider = 'PhonePe' | 'GooglePay' | 'Paytm' | 'CRED' | 'BHIM' | 'AmazonPay';
 
-export interface ProductReview {
+export type BankName = 'HDFC Bank' | 'State Bank of India' | 'ICICI Bank' | 'Axis Bank' | 'Punjab National Bank' | 'Kotak Mahindra Bank' | 'Paytm' | 'Paytm Payments Bank';
+
+export interface DeviceForensics {
+  deviceId: string;
+  deviceModel: string;
+  osVersion: string;
+  appVersion: string;
+  ipAddress: string;
+  isp: string;
+  locationCity: string;
+  locationState: string;
+  isVpn: boolean;
+  isRootedOrEmulated: boolean;
+  simSlotChanges24h: number;
+}
+
+export interface UPITransaction {
   id: string;
+  timestamp: string; // ISO string
+  senderVpa: string;
+  senderName: string;
+  senderBank: BankName;
+  senderAccountEnding: string;
+  receiverVpa: string;
+  receiverName: string;
+  receiverBank: BankName;
+  receiverAccountEnding: string;
+  amount: number;
+  psp: PSPProvider;
+  riskScore: number; // 0 - 100
+  severity: RiskSeverity;
+  fraudCategory?: FraudCategory;
+  fraudReasons: string[];
+  status: AlertStatus;
+  device: DeviceForensics;
+  muleHopLevel?: number; // 1 to 4 if involved in money mule syndicate
+  clusterId?: string; // Group linked syndicate accounts
+  analystNotes?: string[];
+  resolvedBy?: string;
+  resolvedAt?: string;
+}
+
+export interface NetworkNode {
+  id: string;
+  label: string;
+  type: 'VICTIM' | 'MULE_1' | 'MULE_2' | 'SINK_CRYPTO' | 'SINK_CASH';
+  riskScore: number;
+  vpa: string;
+  amount: number;
+  bank: string;
+  city: string;
+}
+
+export interface NetworkEdge {
+  from: string;
+  to: string;
+  amount: number;
+  timestamp: string;
+  txId: string;
+}
+
+export interface MuleCluster {
+  id: string;
+  name: string;
+  totalVolume: number;
+  nodesCount: number;
+  status: 'ACTIVE_SYNDICATE' | 'CONTAINED' | 'MONITORING';
+  nodes: NetworkNode[];
+  edges: NetworkEdge[];
+  aiAnalysis: string;
+}
+
+export interface UserRole {
+  id: string;
+  name: string;
+  role: 'LEAD_INVESTIGATOR' | 'RISK_ANALYST' | 'COMPLIANCE_OFFICER' | 'AUDITOR';
+  badge: string;
+  email: string;
+}
+
+export interface AuditAction {
+  id: string;
+  timestamp: string;
   userName: string;
-  rating: number;
-  date: string;
-  comment: string;
-  verifiedBuyer: boolean;
-  location: string;
+  userRole: string;
+  action: 'FREEZE_VPA' | 'CLEAR_ALERT' | 'ESCALATE_SAR' | 'CHANGE_STATUS' | 'ADD_NOTE' | 'SIMULATE_ATTACK';
+  targetTxId: string;
+  targetVpa: string;
+  details: string;
 }
 
-export interface EthnicProduct {
-  id: string;
-  title: string;
-  subtitle: string;
-  category: EthnicCategory;
-  priceINR: number;
-  mrpINR: number;
-  discountPercent: number;
-  rating: number;
-  reviewsCount: number;
-  imageUrl: string;
-  additionalImages: string[];
-  fabric: FabricType;
-  craft: CraftWork;
-  occasion: OccasionType;
-  color: string;
-  colorHex: string;
-  availableSizes: string[];
-  description: string;
-  artisanStory: string;
-  careInstructions: string;
-  inStock: boolean;
-  isBestseller?: boolean;
-  isNewArrival?: boolean;
-  isHandcrafted?: boolean;
-  reviews: ProductReview[];
-}
-
-export interface CartItem {
-  product: EthnicProduct;
-  selectedSize: string;
-  selectedColor: string;
-  quantity: number;
-}
-
-export interface CatalogFilterState {
-  category: string; // 'ALL' or specific category
-  fabric: string; // 'ALL' or specific fabric
-  craft: string; // 'ALL' or specific craft
-  occasion: string; // 'ALL' or specific occasion
-  maxPrice: number;
-  sortBy: 'FEATURED' | 'PRICE_LOW_HIGH' | 'PRICE_HIGH_LOW' | 'RATING' | 'NEWEST';
-  searchQuery: string;
+export interface RealtimeMetrics {
+  totalProcessedCount: number;
+  totalVolumeINR: number;
+  fraudAlertCount: number;
+  criticalAlertCount: number;
+  preventedFraudAmountINR: number;
+  fraudRatePercent: number;
+  avgDetectionLatencyMs: number;
+  activeSyndicatesCount: number;
 }
